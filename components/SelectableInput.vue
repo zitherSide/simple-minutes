@@ -14,7 +14,7 @@ export default {
     props:{
         label: String,
         model: String,
-        items: [],
+        items: Array,
     },
     computed:{
         innerModel:{
