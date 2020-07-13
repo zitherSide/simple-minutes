@@ -83,5 +83,6 @@ export default {
         fs: "empty"
       }
     }
-  }
+  },
+  serverMiddleware:['~/api' ]
 }

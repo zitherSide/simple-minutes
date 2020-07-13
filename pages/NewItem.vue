@@ -19,7 +19,7 @@
         <v-container>
             <v-card ripple>
                 <v-card-title>Content</v-card-title>
-                <v-textarea v-model="content"></v-textarea>
+                <v-textarea v-model="content" light background-color="white"></v-textarea>
             </v-card>
             <v-card-actions>
                 <v-spacer/>
@@ -66,6 +66,14 @@ import SelectableInput from '~/components/SelectableInput.vue'
 import {mapState} from 'vuex'
 
 export default {
+    asyncData(context){
+        if(process.server){
+            console.log('rhi');
+            const fs = require('fs');
+            //fs.writeFileSync("assets/json/items.json", "test");
+        }
+        return {};
+    },
     data(){
         return {
             showEditDlg : true,
