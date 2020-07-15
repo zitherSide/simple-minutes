@@ -96,9 +96,9 @@ export default {
                     list:this.$store.state.attributes.names,
                 },
                 {
-                    label:"Category",
+                    label:"Tag",
                     data:"",
-                    list:this.$store.state.attributes.categories,
+                    list:this.$store.state.attributes.tags,
                 }
             ],
             content:"",
@@ -108,16 +108,16 @@ export default {
         SelectableInput
     },
     methods : {
-        saveItem(type, department, name, category, content){
+        saveItem(type, department, name, tags, content){
             this.$store.commit("attributes/addType", type);
             this.$store.commit("attributes/addDepartment", department);
             this.$store.commit("attributes/addName", name);
-            this.$store.commit("attributes/addCategory", category);
+            this.$store.commit("attributes/addTags", tags);
             this.$store.commit("items/addArticle", {
                 "type": type,
                 "department": department,
                 "name": name,
-                "category": category,
+                "tag": tags,
                 "content": content,
             });
             this.saved = true;
