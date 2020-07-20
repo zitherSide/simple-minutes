@@ -66,14 +66,6 @@ import SelectableInput from '~/components/SelectableInput.vue'
 import {mapState} from 'vuex'
 
 export default {
-    asyncData(context){
-        if(process.server){
-            console.log('rhi');
-            const fs = require('fs');
-            //fs.writeFileSync("assets/json/items.json", "test");
-        }
-        return {};
-    },
     data(){
         return {
             showEditDlg : true,
@@ -119,6 +111,7 @@ export default {
                 "name": name,
                 "tag": tags,
                 "content": content,
+                "createdDate": Date.now(),
             });
             this.saved = true;
             return;

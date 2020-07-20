@@ -5,7 +5,7 @@ const fs = require('fs')
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-app.post('/api/post', async (req, res) => {
+app.post('/api/save', async (req, res) => {
     fs.writeFile('assets/json/items.json', JSON.stringify(req.body.data), (err) => {
         if(err)
             console.log(err)

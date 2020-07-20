@@ -110,6 +110,11 @@ export default {
           icon: 'mdi-pencil',
           title: 'NewItem',
           to: '/NewItem'
+        },
+        {
+          icon: 'mdi-format-list-bulleted-type',
+          title: 'List',
+          to: '/itemList'
         }
       ],
       miniVariant: false,

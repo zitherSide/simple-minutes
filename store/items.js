@@ -8,8 +8,7 @@ export const state = ()=>({
 export const mutations = {
     addArticle(state, payload){
         state.articles.push(payload);
-        const postMsg = JSON.stringify(state.articles);
-        axios.post(`http://localhost:3000/api/post`, {data: state.articles})
+        axios.post(`http://localhost:3000/api/save`, {data: state.articles})
             .then( (response) => {
             }).catch( (err) => {
                 alert(err)   
