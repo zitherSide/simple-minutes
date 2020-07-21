@@ -14,10 +14,8 @@
                     :items="item.list">
                 </SelectableInput>
             </v-layout>
-        </v-container>
-        <v-divider/>
-        <v-container>
-            <v-card ripple>
+            <v-divider/>
+            <v-card>
                 <v-card-title>Content</v-card-title>
                 <v-textarea v-model="content" light background-color="white"></v-textarea>
             </v-card>
@@ -58,6 +56,20 @@
             </v-card-actions>
         </v-card>
     </v-dialog>
+
+    <v-divider/>
+    <v-card>
+        <v-card-title>Recent Items</v-card-title>
+        <v-data-table
+            :headers="recentItemsHeaders"
+            :items="$store.state.items.articles"
+            :options="recentItemOption"
+            dense>
+            <template v-slot:item.createdDate="{ item }">
+                <span>{{(new Date(item.createdDate)).toLocaleString()}}</span>
+            </template>
+        </v-data-table>
+    </v-card>
 </div>
 </template>
 
@@ -94,6 +106,19 @@ export default {
                 }
             ],
             content:"",
+            recentItemsHeaders:[
+                { text: 'Content', value: "content"},
+                { text: 'Type', value: "type"},
+                { text: 'Department', value: 'department'},
+                { text: 'Name', value: 'name'},
+                { text: 'tag', value: 'tags'},
+                { text: 'created', value: 'createdDate'}
+            ],
+            recentItemOption:{
+                sortBy: ['createdDate'],
+                sortDesc: [true],
+                itemsPerPage: 5
+            }
         }
     },
     components : {
@@ -109,7 +134,7 @@ export default {
                 "type": type,
                 "department": department,
                 "name": name,
-                "tag": tags,
+                "tags": tags,
                 "content": content,
                 "createdDate": Date.now(),
             });

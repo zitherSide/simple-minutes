@@ -3,7 +3,7 @@
         <v-data-table
             :headers="headers"
             :items="$store.state.items.articles"
-            items-per-page="10000">
+            :options="options">
             <template v-slot:item.createdDate="{ item }">
                 <span>{{(new Date(item.createdDate)).toLocaleString()}}</span>
             </template>
@@ -24,7 +24,12 @@ export default {
                 { text: 'Name', value: 'name'},
                 { text: 'tag', value: 'tags'},
                 { text: 'created', value: 'createdDate'}
-            ]
+            ],
+            options:{
+                sortBy: ['createdDate', 'department', 'type'],
+                sortDesc: [true, false, false],
+                itemsPerPage: 1000
+            }
         }
     }
 }
