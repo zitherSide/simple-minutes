@@ -16,5 +16,10 @@ export const mutations = {
     },
     removeArticle(state, index){
         state.articles.splice(index, 1);
+        axios.post(`/api/save`, {data: state.articles})
+            .then( (response) => {
+            }).catch( (err) => {
+                alert(err)
+            })
     },
 }
