@@ -97,19 +97,9 @@ export default {
       fixed: false,
       items: [
         {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/'
-        },
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
-        },
-        {
           icon: 'mdi-pencil',
           title: 'NewItem',
-          to: '/NewItem'
+          to: '/'
         },
         {
           icon: 'mdi-format-list-bulleted-type',
@@ -120,7 +110,7 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'Vuetify.js'
+      title: 'Simple Minutes'
     }
   }
 }
