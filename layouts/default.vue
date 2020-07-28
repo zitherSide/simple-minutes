@@ -58,7 +58,7 @@
       </v-btn>
     </v-app-bar>
     <v-content>
-      <v-container>
+      <v-container fluid style="margin: 10px; padding: 10px; width: 100%">
         <nuxt />
       </v-container>
     </v-content>

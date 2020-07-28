@@ -1,8 +1,8 @@
 <template>
 <div>
     <v-layout column>
-        <v-card class="pa-3" flat ripple>
-            <v-card-title> {{label}} </v-card-title>
+        <v-card flat>
+            <v-card-text class="pa=0"> {{label}} </v-card-text>
             <v-combobox v-model='innerModel' :items="items"/>
         </v-card>
     </v-layout>

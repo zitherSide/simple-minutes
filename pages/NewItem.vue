@@ -4,21 +4,22 @@
         <v-toolbar>
             <v-toolbar-title>New Item</v-toolbar-title>
         </v-toolbar>
-        <v-container>
-            <v-card-title>Attributes</v-card-title>
-            <v-layout row>
-                <SelectableInput v-for="item in items" :key=item.label
-                    :label="item.label"
-                    :model="item.data"
-                    @change="item.data = $event"
-                    :items="item.list">
-                </SelectableInput>
-            </v-layout>
-            <v-divider/>
+        <v-container fluid>
             <v-card>
-                <v-card-title>Content</v-card-title>
-                <v-textarea v-model="content" light background-color="white"></v-textarea>
+                <v-card-text>Attributes</v-card-text>
+                <v-layout row>
+                    <v-spacer/>
+                    <SelectableInput v-for="item in items" :key=item.label
+                        :label="item.label"
+                        :model="item.data"
+                        @change="item.data = $event"
+                        :items="item.list">
+                    </SelectableInput>
+                    <v-spacer/>
+                </v-layout>
             </v-card>
+            <v-divider/>
+            <v-textarea label="Content" v-model="content" auto-grow outlined ></v-textarea>
             <v-card-actions>
                 <v-spacer/>
                 <v-btn
@@ -27,7 +28,7 @@
                     Create
                 </v-btn>
                 <v-spacer/>
-                <v-btn color="secondary">
+                <v-btn color="secondary" @click="clearInput()">
                     Cancel
                 </v-btn>
                 <v-spacer/>
@@ -49,7 +50,7 @@
             </v-card-text>
             <v-card-actions>
                 <v-spacer/>
-                <v-btn @click="saved = false" text autofocus=true>
+                <v-btn @click="saved = false" text autofocus>
                     OK
                 </v-btn> 
                 <v-spacer/>
@@ -141,6 +142,9 @@ export default {
             this.saved = true;
             return;
         },
+        clearInput(){
+            this.content = "";
+        }
     },
     
 }

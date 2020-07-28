@@ -25,13 +25,13 @@ export default {
     data () {
         return {
             headers:[
-                { text: 'Content', value: "content"},
+                { text: 'Content', value: "content", width: "50%"},
                 { text: 'Type', value: "type"},
-                { text: 'Department', value: 'department'},
+                { text: 'Department', value: 'department', width: "10%"},
                 { text: 'Name', value: 'name'},
                 { text: 'tag', value: 'tags'},
-                { text: 'created', value: 'createdDate'},
-                { text: 'action', value: 'action' }
+                { text: 'created', value: 'createdDate', width: '10%'},
+                { text: 'action', value: 'action', width: '5%', class: 'px-0' }
             ],
             options:{
                 sortBy: ['createdDate', 'department', 'type'],
