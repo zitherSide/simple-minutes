@@ -33,6 +33,9 @@
                 <v-textarea auto-grow disabled :value="item.content">
                 </v-textarea>
             </template>
+            <template v-slot:item.tags="{ item }">
+                <v-chip :color="chipColors(item.tags)">{{item.tags}}</v-chip>
+            </template>
             <template v-slot:item.createdDate="{ item }">
                 <span>{{(new Date(item.createdDate)).toLocaleString()}}</span>
             </template>
@@ -70,7 +73,7 @@ export default {
                 itemsPerPage: 1000
             },
             search: "",
-            filters:[ContentIdx, TypeIdx, DepIdx, NameIdx, TagIdx]
+            filters:[ContentIdx, TypeIdx, DepIdx, NameIdx, TagIdx],
         }
     },
     computed: {
@@ -118,6 +121,14 @@ export default {
             }
             return false;
         },
+        chipColors(key) {
+            const table ={
+                "Engine": "blue",
+                "GUI": "green",
+                "API": "red"
+            }
+            return table[key] ? table[key] : "grey"
+        }
     }
 }
    
