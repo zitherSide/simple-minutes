@@ -84,5 +84,12 @@ export default {
       }
     }
   },
-  serverMiddleware:['~/api' ]
+  serverMiddleware:['~/api' ],
+  server: {
+    port: 8000,
+    host: '0.0.0.0'
+  },
+  env: {
+    baseUrl: 'http://172.29.50.150:8000/'
+  }
 }

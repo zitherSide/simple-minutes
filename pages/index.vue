@@ -101,7 +101,7 @@ export default {
                     list:this.$store.state.attributes.names,
                 },
                 {
-                    label:"Tag",
+                    label:"Tags",
                     data:"",
                     list:this.$store.state.attributes.tags,
                 }
