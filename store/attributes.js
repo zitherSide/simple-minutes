@@ -13,37 +13,45 @@ export const state = ()=>({
 
 export const mutations = {
     addType(state, payload){
-        addUnique(state.types, payload);
-        axios.post('http://localhost:3000/api/saveAttrib', {
-            typename: "types",
-            data: state.types
-        })
+        if(addUnique(state.types, payload)){
+            console.log("store addtype")
+            console.log(`${process.env.baseUrl}api/saveAttrib`)
+            axios.post(`${process.env.baseUrl}api/saveAttrib`, {
+                typename: "types",
+                data: state.types
+            })
+        }
     },
     addDepartment(state, payload){
-        addUnique(state.departments, payload);
-        axios.post('http://localhost:3000/api/saveAttrib', {
-            typename: "departments",
-            data: state.departments
-        })
+        if(addUnique(state.departments, payload)){
+            axios.post(`${process.env.baseUrl}api/saveAttrib`, {
+                typename: "departments",
+                data: state.departments
+            })
+        }
     },
     addName(state, payload){
-        addUnique(state.names, payload);
-        axios.post('http://localhost:3000/api/saveAttrib', {
-            typename: "names",
-            data: state.names
-        })
+        if(addUnique(state.names, payload)){
+            axios.post(`${process.env.baseUrl}api/saveAttrib`, {
+                typename: "names",
+                data: state.names
+            })
+        }
     },
     addTags(state, payload){
-        addUnique(state.tags, payload);
-        axios.post('http://localhost:3000/api/saveAttrib', {
-            typanema: "tags",
-            data: state.tags
-        })
+        if(addUnique(state.tags, payload)){
+            axios.post(`${process.env.baseUrl}api/saveAttrib`, {
+                typename: "tags",
+                data: state.tags
+            })
+        }
     }
 }
 
 function addUnique(array, item){
     if(!array.includes(item)){
         array.push(item);
+        return true
     }
+    return false
 }
