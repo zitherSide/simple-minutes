@@ -6,15 +6,16 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
 app.post('/api/save', async (req, res) => {
-    console.log("save Received")
+    //console.log("save Received")
     console.log()
     fs.writeFile('assets/json/items.json', JSON.stringify(req.body.data), (err) => {
         if(err)
             console.log(err)
-        else
-            console.log("content wrote: " + req.body.data)
+        else{
+            //console.log("content wrote: " + req.body.data)
+        }
     })
-    await res.end(req.body)
+    await res.end()
 })
 
 app.post('/api/saveAttrib', async (req, res) => {
@@ -26,7 +27,7 @@ app.post('/api/saveAttrib', async (req, res) => {
         else
             console.log("attrib wrote: " + req.body.data)
     })
-    await res.end(req.body)
+    await res.end()
 })
 
 app.get('/api/get', (req, res) => {
