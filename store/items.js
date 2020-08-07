@@ -24,4 +24,8 @@ export const mutations = {
                 alert(err)
             })
     },
+    setArticles(state, payload){
+        state.articles = payload
+        console.log("set: " + JSON.stringify(state.articles))
+    }
 }

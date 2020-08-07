@@ -91,5 +91,8 @@ export default {
   },
   env: {
     baseUrl: 'http://172.29.50.150:8000/'
+  },
+  router: {
+    middleware: 'ArticleList'
   }
 }
