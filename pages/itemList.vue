@@ -25,7 +25,7 @@
         </v-card>
         <v-data-table
             :headers="headers"
-            :items="items"
+            :items="$store.state.items.items"
             :options="options"
             :search="search"
             :custom-filter="customSearch">
@@ -36,8 +36,8 @@
             <template v-slot:item.tags="{ item }">
                 <v-chip :color="chipColors(item.tags)">{{item.tags}}</v-chip>
             </template>
-            <template v-slot:item.createdDate="{ item }">
-                <span>{{(new Date(item.createdDate)).toLocaleString()}}</span>
+            <template v-slot:item.created="{ item }">
+                <span>{{(new Date(item.created)).toLocaleString()}}</span>
             </template>
             <template v-slot:item.action="{ item }">
                 <v-btn small @click="deleteItem(item.index)"><v-icon>mdi-delete</v-icon></v-btn>
@@ -62,27 +62,18 @@ export default {
                 { text: 'Content', value: "content", width: "50%"},
                 { text: 'Type', value: "type"},
                 { text: 'Department', value: 'department', width: "10%"},
-                { text: 'Name', value: 'name'},
+                { text: 'Name', value: 'names'},
                 { text: 'tag', value: 'tags'},
-                { text: 'created', value: 'createdDate', width: '10%'},
+                { text: 'created', value: 'created', width: '10%'},
                 { text: 'action', value: 'action', width: '5%', class: 'px-0' }
             ],
             options:{
-                sortBy: ['createdDate', 'department', 'type'],
+                sortBy: ['created', 'department', 'type'],
                 sortDesc: [true, false, false],
                 itemsPerPage: 1000
             },
             search: "",
             filters:[ContentIdx, TypeIdx, DepIdx, NameIdx, TagIdx],
-        }
-    },
-    computed: {
-        items(){
-            return this.$store.state.items.articles.map( (obj, index) => {
-                let rObj = obj
-                rObj['index'] = index
-                return rObj
-            })
         }
     },
     methods:{

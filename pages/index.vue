@@ -63,11 +63,11 @@
         <v-card-title>Recent Items</v-card-title>
         <v-data-table
             :headers="recentItemsHeaders"
-            :items="$store.state.items.articles"
+            :items="$store.state.items.items"
             :options="recentItemOption"
             dense>
-            <template v-slot:item.createdDate="{ item }">
-                <span>{{(new Date(item.createdDate)).toLocaleString()}}</span>
+            <template v-slot:item.created="{ item }">
+                <span>{{(new Date(item.created)).toLocaleString()}}</span>
             </template>
         </v-data-table>
     </v-card>
@@ -76,6 +76,7 @@
 
 <script>
 import SelectableInput from '~/components/SelectableInput.vue'
+import axios from 'axios'
 import {mapState} from 'vuex'
 
 export default {
@@ -111,12 +112,12 @@ export default {
                 { text: 'Content', value: "content"},
                 { text: 'Type', value: "type"},
                 { text: 'Department', value: 'department'},
-                { text: 'Name', value: 'name'},
+                { text: 'Name', value: 'names'},
                 { text: 'tag', value: 'tags'},
-                { text: 'created', value: 'createdDate'}
+                { text: 'created', value: 'created'}
             ],
             recentItemOption:{
-                sortBy: ['createdDate'],
+                sortBy: ['created'],
                 sortDesc: [true],
                 itemsPerPage: 5
             }
@@ -127,18 +128,27 @@ export default {
     },
     methods : {
         saveItem(type, department, name, tags, content){
-            this.$store.commit("attributes/addType", type);
-            this.$store.commit("attributes/addDepartment", department);
-            this.$store.commit("attributes/addName", name);
-            this.$store.commit("attributes/addTags", tags);
-            this.$store.commit("items/addArticle", {
+            console.log("Save item")
+            // if(!this.$store.getters['attributes/hasTag'](tags)){
+            //     console.log("Add tag")
+            //     axios.post(`${process.env.baseUrl}api/addTag`, {tag:tags})
+            // }
+            // if(!this.$store.getters['attributes/hasName'](name)){
+            //     axios.post(`${process.env.baseUrl}api/addName`, {name:name})    //これはプラスボタンとか別の管理画面を作ったほうが良いかも
+            // }
+            //this.$store.commit("attributes/addTags", tags);
+
+            let item = {
                 "type": type,
                 "department": department,
-                "name": name,
+                "names": name,
                 "tags": tags,
                 "content": content,
-                "createdDate": Date.now(),
-            });
+                "created": Date.now(),
+                "updated": Date.now()
+            }
+            this.$store.commit("items/addItem", item);
+            axios.post(`${process.env.baseUrl}api/addItem`, item)
             this.saved = true;
             return;
         },

@@ -1,31 +1,18 @@
 import axios from 'axios'
-import articles from 'assets/json/items.json'
 
 export const state = ()=>({
-    articles
+    items: []
 })
 
 export const mutations = {
-    addArticle(state, payload){
-        state.articles.push(payload);
-        console.log("store add article")
-        console.log(state.articles)
-        axios.post(`${process.env.baseUrl}api/save`, {data: state.articles})
-            .then( (response) => {
-            }).catch( (err) => {
-                alert(err)   
-            })
+    addItem(state, payload){
+        state.items.push(payload);
     },
-    removeArticle(state, index){
-        state.articles.splice(index, 1);
-        axios.post(`${process.env.baseUrl}api/save`, {data: state.articles})
-            .then( (response) => {
-            }).catch( (err) => {
-                alert(err)
-            })
+    removeItems(state, index){
+        state.items.splice(index, 1);
     },
-    setArticles(state, payload){
-        state.articles = payload
-        console.log("set: " + JSON.stringify(state.articles))
+    setItems(state, payload){
+        state.items = payload
+        console.log(state.items)
     }
 }

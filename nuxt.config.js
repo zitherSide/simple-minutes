@@ -90,9 +90,9 @@ export default {
     host: '0.0.0.0'
   },
   env: {
-    baseUrl: 'http://172.29.50.150:8000/'
+    baseUrl: 'http://172.29.50.10:8000/'
   },
   router: {
-    middleware: 'ArticleList'
+    middleware: 'dataLoader'
   }
 }
