@@ -139,6 +139,7 @@ export default {
             //this.$store.commit("attributes/addTags", tags);
 
             let item = {
+                "id": -1,
                 "type": type,
                 "department": department,
                 "names": name,

@@ -40,14 +40,19 @@
                 <span>{{(new Date(item.created)).toLocaleString()}}</span>
             </template>
             <template v-slot:item.action="{ item }">
-                <v-btn small @click="deleteItem(item.index)"><v-icon>mdi-delete</v-icon></v-btn>
+                <v-btn small @click="deleteItem(item.id)"><v-icon>mdi-delete</v-icon></v-btn>
             </template>
         </v-data-table>
+        <v-snackbar v-model="showSnackbar" :color="snackbarColor" :timeout="snackbarTimeout" top right>
+            {{snackbarMessage}}
+            <v-btn outlined small @click='showSnackbar=false'><v-icon>mdi-close</v-icon></v-btn>
+        </v-snackbar>
     </v-app>
 </template>
 
 <script>
 import {mapState} from 'vuex'
+import axios from 'axios'
 
 const ContentIdx = 0
 const TypeIdx = 1
@@ -74,11 +79,31 @@ export default {
             },
             search: "",
             filters:[ContentIdx, TypeIdx, DepIdx, NameIdx, TagIdx],
+            showSnackbar: false,
+            snackbarTimeout: 10000,
+            snackbarMessage: "",
+            snackbarColor: ""
         }
     },
     methods:{
-        deleteItem(index){
-            this.$store.commit("items/removeArticle", index)
+        deleteItem(id){
+            if(id === -1){
+                snackbarMessage = "Reload the page to update the database!"
+                this.snackbarColor = "error"
+                this.showSnackbar = true
+            }else{
+                axios.post(`${process.env.baseUrl}api/deleteItem`, {id}).then( (res)=>{
+                    this.snackbarMessage = "Deleted!"
+                    this.snackbarColor = "success"
+                    this.showSnackbar = true
+                    this.$store.commit("items/removeItem", id)
+                }).catch((err) => {
+                    this.snackbarMessage = "Server Err: " + err
+                    this.snackbarColor = "error"
+                    this.showSnackbar = true
+                })
+
+            }
         },
         customSearch(value, search, item){
             function searchInAttrib(search, item, attrib){

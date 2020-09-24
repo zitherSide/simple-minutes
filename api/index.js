@@ -79,4 +79,15 @@ app.post('/api/addItem', async (req, res) => {
     await res.end()
 })
 
+app.post('/api/deleteItem', async (req, res) => {
+    db.serialize( () => {
+        db.run('DELETE FROM items WHERE id = ?', [req.body.id], (err) => {
+            if(err){
+                console.log(err)
+            }
+        })
+    })
+    await res.end()
+})
+
 export default app
