@@ -49,9 +49,45 @@ app.get('/api/getItems', (req, res) => {
 })
 
 app.post('/api/addTag', async (req, res) => {
-    console.log(req.body.tag)
+    console.log(req.body.data)
     db.serialize( () => {
-        db.run('INSERT into tags(tag) VALUES(?)', req.body.tag, (err) =>{
+        db.run('INSERT into tags(tag) VALUES(?)', req.body.data, (err) =>{
+            if(err){
+                console.log(err)
+            }
+        })
+    })
+    await res.end()
+})
+
+app.post('/api/addType', async (req, res) => {
+    console.log(req.body.data)
+    db.serialize( () => {
+        db.run('INSERT into types(type) VALUES(?)', req.body.data, (err) =>{
+            if(err){
+                console.log(err)
+            }
+        })
+    })
+    await res.end()
+})
+
+app.post('/api/addName', async (req, res) => {
+    console.log(req.body.data)
+    db.serialize( () => {
+        db.run('INSERT into names(name) VALUES(?)', req.body.data, (err) =>{
+            if(err){
+                console.log(err)
+            }
+        })
+    })
+    await res.end()
+})
+
+app.post('/api/addDepartment', async (req, res) => {
+    console.log(req.body.data)
+    db.serialize( () => {
+        db.run('INSERT into departments(department) VALUES(?)', req.body.data, (err) =>{
             if(err){
                 console.log(err)
             }

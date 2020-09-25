@@ -85,6 +85,10 @@
     >
       <span>&copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
+    <v-snackbar v-model="showSnackbar" :color="snackbarColor" :timeout="snackbarTimeout" top right>
+      {{snackbarMessage}}
+      <v-btn outlined small @click='showSnackbar=false'><v-icon>mdi-close</v-icon></v-btn>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -110,7 +114,21 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'Simple Minutes'
+      title: 'Simple Minutes',
+      snackbarMessage: "",
+      showSnackbar: false,
+      snackbarTimeout: 10000,
+      snackbarColor: 'error'
+    }
+  },
+  created() {
+    this.$nuxt.$on('updateLayoutData', this.setData)
+  },
+  methods: {
+    setData(payload) {
+      Object.keys(payload).forEach( (key) => {
+        this.$data[key] = payload[key]
+      })
     }
   }
 }

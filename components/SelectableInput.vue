@@ -1,11 +1,12 @@
 <template>
-<div>
-    <v-layout column>
+    <div>
         <v-card flat>
-            <v-card-text class="pa=0"> {{label}} </v-card-text>
-            <v-combobox v-model='innerModel' :items="items"/>
+            <v-card-text class="pa=5 ma=5">
+                {{label}} 
+                <v-btn fab small depressed @click=OnClick><v-icon color="green">mdi-plus</v-icon></v-btn>
+            </v-card-text>
+            <v-autocomplete v-model='innerModel' :items="items"/>
         </v-card>
-    </v-layout>
     </div>
 </template>
 
@@ -15,6 +16,7 @@ export default {
         label: String,
         model: String,
         items: Array,
+        btnFunc: Function
     },
     computed:{
         innerModel:{
@@ -24,6 +26,11 @@ export default {
             set(value){
                 this.$emit('change', value);
             }
+        },
+    },
+    methods:{
+        OnClick(){
+            this.$emit('click')
         }
     }
 }

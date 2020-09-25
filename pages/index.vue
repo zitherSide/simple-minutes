@@ -13,6 +13,7 @@
                         :label="item.label"
                         :model="item.data"
                         @change="item.data = $event"
+                        @click="startAttribEdit(item.label, item.addMutation, item.hadKeyGetter, item.webAPI)"
                         :items="item.list">
                     </SelectableInput>
                     <v-spacer/>
@@ -71,6 +72,22 @@
             </template>
         </v-data-table>
     </v-card>
+
+    <v-dialog v-model="showAddAttribDlg" max-width='600px'>
+        <v-card>
+            <v-card-title class="headline grey darken-3">New {{edittingAttrib}}</v-card-title>
+            <v-col>
+                <v-text-field 
+                    v-model="newAttribValue" 
+                    autofocus
+                    :rules="[attribRules.notEmpty]"></v-text-field>
+                <v-card-actions>
+                    <v-spacer/>
+                    <v-btn outlined color="success" @click="addAttrib(newAttribValue, edittingAttribMutaion, edittingAttribHasKeyGetter, edittingAttribWebAPI)">Add</v-btn>
+                </v-card-actions>
+            </v-col>
+        </v-card>
+    </v-dialog>
 </div>
 </template>
 
@@ -82,28 +99,38 @@ import {mapState} from 'vuex'
 export default {
     data(){
         return {
-            showEditDlg : true,
-            test:"testData",
             saved:false,
             items:[
                 {
                     label:"Type",
-                    data:"",
+                    addMutation: "attributes/addType",
+                    hadKeyGetter: "attributes/hasType",
+                    webAPI: "api/addType",
+                    data:this.$store.state.attributes.types[0],
                     list:this.$store.state.attributes.types,
                 },
                 {
                     label:"Department",
-                    data:"",
+                    addMutation: "attributes/addDepartment",
+                    hadKeyGetter: "attributes/hasDepartment",
+                    webAPI: "api/addDepartment",
+                    data:this.$store.state.attributes.departments[0],
                     list:this.$store.state.attributes.departments,
                 },
                 {
                     label:"Name",
-                    data:"",
+                    addMutation: "attributes/addName",
+                    hadKeyGetter: "attributes/hasName",
+                    webAPI: "api/addName",
+                    data:this.$store.state.attributes.names[0],
                     list:this.$store.state.attributes.names,
                 },
                 {
                     label:"Tags",
-                    data:"",
+                    addMutation: "attributes/addTag",
+                    hadKeyGetter: "attributes/hasTag",
+                    webAPI: "api/addTag",
+                    data:this.$store.state.attributes.tags[0],
                     list:this.$store.state.attributes.tags,
                 }
             ],
@@ -120,7 +147,16 @@ export default {
                 sortBy: ['created'],
                 sortDesc: [true],
                 itemsPerPage: 5
-            }
+            },
+            attribRules: {
+                notEmpty: value => !!value || 'Must have one letter at least.'
+            },
+            edittingAttrib: "",
+            edittingAttribMutaion: "",
+            edittingAttribWebAPI: "",
+            edittingAttribHasKeyGetter: "",
+            showAddAttribDlg: false,
+            newAttribValue: "",
         }
     },
     components : {
@@ -128,16 +164,6 @@ export default {
     },
     methods : {
         saveItem(type, department, name, tags, content){
-            console.log("Save item")
-            // if(!this.$store.getters['attributes/hasTag'](tags)){
-            //     console.log("Add tag")
-            //     axios.post(`${process.env.baseUrl}api/addTag`, {tag:tags})
-            // }
-            // if(!this.$store.getters['attributes/hasName'](name)){
-            //     axios.post(`${process.env.baseUrl}api/addName`, {name:name})    //これはプラスボタンとか別の管理画面を作ったほうが良いかも
-            // }
-            //this.$store.commit("attributes/addTags", tags);
-
             let item = {
                 "id": -1,
                 "type": type,
@@ -155,9 +181,28 @@ export default {
         },
         clearInput(){
             this.content = "";
+        },
+        startAttribEdit(attrib, mutation, getter, webAPI){
+            this.edittingAttrib = attrib
+            this.edittingAttribMutaion = mutation
+            this.edittingAttribWebAPI = webAPI
+            this.edittingAttribHasKeyGetter = getter
+            this.showAddAttribDlg = true
+        },
+        addAttrib(newVal, mutation, getter, webAPI){
+            if(!!newVal && this.$store.getters[getter](newVal)){
+                this.showLayoutSnackbar('Already Exists!', 'error')
+            }else{
+                this.$store.commit(mutation, newVal)
+                axios.post(`${process.env.baseUrl}${webAPI}`, {data: newVal})
+                this.showAddAttribDlg = false;
+                this.showLayoutSnackbar('Added!', 'success')
+            }
+        },
+        showLayoutSnackbar(msg, color){
+            this.$nuxt.$emit("updateLayoutData", {snackbarMessage: msg, snackbarColor: color, showSnackbar: true})
         }
     },
-    
 }
 
 </script>

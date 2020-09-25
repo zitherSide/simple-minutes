@@ -43,10 +43,6 @@
                 <v-btn small @click="deleteItem(item.id)"><v-icon>mdi-delete</v-icon></v-btn>
             </template>
         </v-data-table>
-        <v-snackbar v-model="showSnackbar" :color="snackbarColor" :timeout="snackbarTimeout" top right>
-            {{snackbarMessage}}
-            <v-btn outlined small @click='showSnackbar=false'><v-icon>mdi-close</v-icon></v-btn>
-        </v-snackbar>
     </v-app>
 </template>
 
@@ -79,10 +75,6 @@ export default {
             },
             search: "",
             filters:[ContentIdx, TypeIdx, DepIdx, NameIdx, TagIdx],
-            showSnackbar: false,
-            snackbarTimeout: 10000,
-            snackbarMessage: "",
-            snackbarColor: ""
         }
     },
     methods:{
@@ -93,14 +85,10 @@ export default {
                 this.showSnackbar = true
             }else{
                 axios.post(`${process.env.baseUrl}api/deleteItem`, {id}).then( (res)=>{
-                    this.snackbarMessage = "Deleted!"
-                    this.snackbarColor = "success"
-                    this.showSnackbar = true
                     this.$store.commit("items/removeItem", id)
+                    showLayoutSnackbar('Deleted', 'Success')
                 }).catch((err) => {
-                    this.snackbarMessage = "Server Err: " + err
-                    this.snackbarColor = "error"
-                    this.showSnackbar = true
+                    showLayoutSnackbar("Err: " + err, 'error')
                 })
 
             }
@@ -144,6 +132,9 @@ export default {
                 "API": "red"
             }
             return table[key] ? table[key] : "grey"
+        },
+        showLayoutSnackbar(msg, color){
+            this.$nuxt.emit({snackbarMessage:msg, snackbarColor: color, showSnackbar: true})
         }
     }
 }

@@ -1,4 +1,3 @@
-
 export const state = ()=>({
     types: [],
     departments: [],
@@ -43,7 +42,7 @@ export const mutations = {
     addName(state, payload){
         state.names.push(payload)
     },
-    addTags(state, payload){
+    addTag(state, payload){
         state.tags.push(payload)
     }
 }

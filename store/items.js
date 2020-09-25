@@ -18,6 +18,5 @@ export const mutations = {
     },
     setItems(state, payload){
         state.items = payload
-        console.log(state.items)
     }
 }
