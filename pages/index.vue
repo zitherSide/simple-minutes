@@ -1,31 +1,44 @@
 <template>
-<div>
+<v-app fluid style="margin: 10px; padding: 10px; width: 100%">
     <v-card flat>
         <v-toolbar>
             <v-toolbar-title>New Item</v-toolbar-title>
         </v-toolbar>
         <v-container fluid>
+            <v-textarea label="Content" v-model="content" auto-grow outlined ></v-textarea>
+            <v-divider/>
             <v-card>
-                <v-card-text>Attributes</v-card-text>
-                <v-layout row>
-                    <v-spacer/>
+                Attributes
+                <v-row justify="center">
                     <SelectableInput v-for="item in items" :key=item.label
                         :label="item.label"
                         :model="item.data"
                         @change="item.data = $event"
                         @click="startAttribEdit(item.label, item.addMutation, item.hadKeyGetter, item.webAPI)"
-                        :items="item.list">
+                        :items="item.list"
+                        class="mx-2">
                     </SelectableInput>
-                    <v-spacer/>
-                </v-layout>
+                    <v-col sm='4' md='3'>
+                        <v-card outlined sm='6'>
+                            <v-card-subtitle>
+                                Tags 
+                                <v-btn icon small depressed><v-icon color="green">mdi-plus</v-icon></v-btn>
+                            </v-card-subtitle>
+                            <v-chip-group column>
+                                <v-chip v-for="(tag, i) in $store.state.attributes.tags" :key="i"
+                                    :outlined="!selectedTag[tag.tag]" :color='tag.color' @click="toggleSelectTag(tag)">
+                                    {{tag.tag}}
+                                </v-chip>
+                            </v-chip-group>
+                        </v-card>
+                    </v-col>
+                </v-row>
             </v-card>
-            <v-divider/>
-            <v-textarea label="Content" v-model="content" auto-grow outlined ></v-textarea>
             <v-card-actions>
                 <v-spacer/>
                 <v-btn
                     color="primary"
-                    @click="saveItem(items[0].data, items[1].data, items[2].data, items[3].data, content);">
+                    @click="saveItem(items[0].data, items[1].data, items[2].data, content);">
                     Create
                 </v-btn>
                 <v-spacer/>
@@ -88,7 +101,7 @@
             </v-col>
         </v-card>
     </v-dialog>
-</div>
+</v-app>
 </template>
 
 <script>
@@ -106,33 +119,25 @@ export default {
                     addMutation: "attributes/addType",
                     hadKeyGetter: "attributes/hasType",
                     webAPI: "api/addType",
-                    data:this.$store.state.attributes.types[0],
-                    list:this.$store.state.attributes.types,
+                    data: "",   //履歴はlocalstorageに保存したい
+                    list:this.$store.getters["attributes/typeArray"],
                 },
                 {
                     label:"Department",
                     addMutation: "attributes/addDepartment",
                     hadKeyGetter: "attributes/hasDepartment",
                     webAPI: "api/addDepartment",
-                    data:this.$store.state.attributes.departments[0],
-                    list:this.$store.state.attributes.departments,
+                    data: "",
+                    list:this.$store.getters["attributes/departmentArray"],
                 },
                 {
                     label:"Name",
                     addMutation: "attributes/addName",
                     hadKeyGetter: "attributes/hasName",
                     webAPI: "api/addName",
-                    data:this.$store.state.attributes.names[0],
-                    list:this.$store.state.attributes.names,
+                    data: "",
+                    list:this.$store.getters["attributes/nameArray"],
                 },
-                {
-                    label:"Tags",
-                    addMutation: "attributes/addTag",
-                    hadKeyGetter: "attributes/hasTag",
-                    webAPI: "api/addTag",
-                    data:this.$store.state.attributes.tags[0],
-                    list:this.$store.state.attributes.tags,
-                }
             ],
             content:"",
             recentItemsHeaders:[
@@ -157,13 +162,22 @@ export default {
             edittingAttribHasKeyGetter: "",
             showAddAttribDlg: false,
             newAttribValue: "",
+            enabled: false,
+            selectedTag: {},
         }
+    },
+    created() {
+        this.$store.getters["attributes/tagArray"].forEach( (element, i) => {
+            this.$set(this.selectedTag, element, false)
+        });
     },
     components : {
         SelectableInput
     },
     methods : {
-        saveItem(type, department, name, tags, content){
+        saveItem(type, department, name, content){
+            let tags = Object.keys(this.selectedTag).filter(elem => this.selectedTag[elem])
+            alert(tags)
             let item = {
                 "id": -1,
                 "type": type,
@@ -201,7 +215,10 @@ export default {
         },
         showLayoutSnackbar(msg, color){
             this.$nuxt.$emit("updateLayoutData", {snackbarMessage: msg, snackbarColor: color, showSnackbar: true})
-        }
+        },
+        toggleSelectTag(tag){
+            this.$set(this.selectedTag, tag.tag, !this.selectedTag[tag.tag])
+        },
     },
 }
 

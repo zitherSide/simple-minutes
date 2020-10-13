@@ -1,13 +1,13 @@
 <template>
-    <div>
-        <v-card flat>
-            <v-card-text class="pa=5 ma=5">
+    <v-col sm='4' md='2'>
+        <v-card outlined >
+            <v-card-subtitle>
                 {{label}} 
-                <v-btn fab small depressed @click=OnClick><v-icon color="green">mdi-plus</v-icon></v-btn>
-            </v-card-text>
-            <v-autocomplete v-model='innerModel' :items="items"/>
+                <v-btn icon small depressed @click=OnClick><v-icon color="green">mdi-plus</v-icon></v-btn>
+            </v-card-subtitle>
+            <v-autocomplete class="mx-4" v-model='innerModel' :items="items"/>
         </v-card>
-    </div>
+    </v-col>
 </template>
 
 <script>

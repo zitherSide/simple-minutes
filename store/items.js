@@ -18,5 +18,8 @@ export const mutations = {
     },
     setItems(state, payload){
         state.items = payload
+    },
+    editContent(state, payload){
+        state.items[payload.id].content = payload.content
     }
 }

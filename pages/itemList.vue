@@ -1,27 +1,27 @@
 <template>
-    <v-app>
+    <v-app fluid style="margin: 10px; padding: 10px; width: 100%">
         <v-card>
-            <v-container fluid pa="20">
-            <v-layout column>
+            <v-col fluid pa="20">
                 <v-layout>
                     <v-toolbar-title>Search : {{search}}</v-toolbar-title>
                     <v-spacer/>
                 </v-layout>
                 <v-text-field append-outer-icon="mdi-magnify" outlined v-model="search"></v-text-field>
-                <v-btn-toggle
-                    v-model="filters"
-                    dense
-                    multiple
-                >
+                <v-row>
                     <v-spacer/>
-                    <v-btn>Content</v-btn>   
-                    <v-btn>Type</v-btn>   
-                    <v-btn>Dep.</v-btn>   
-                    <v-btn>Name</v-btn>   
-                    <v-btn>Tag</v-btn>   
-                </v-btn-toggle>
-            </v-layout>
-            </v-container>
+                    <v-btn-toggle
+                        v-model="filters"
+                        dense
+                        multiple>
+                        <v-spacer/>
+                        <v-btn>Content</v-btn>   
+                        <v-btn>Type</v-btn>   
+                        <v-btn>Dep.</v-btn>   
+                        <v-btn>Name</v-btn>   
+                        <v-btn>Tag</v-btn>   
+                    </v-btn-toggle> 
+                </v-row>
+            </v-col>
         </v-card>
         <v-data-table
             :headers="headers"
@@ -29,18 +29,18 @@
             :options="options"
             :search="search"
             :custom-filter="customSearch">
+
             <template v-slot:item.content="{item}">
-                <v-textarea auto-grow disabled :value="item.content">
-                </v-textarea>
+                <v-textarea auto-grow @input="editItemContent({content: $event, id: item.id})" :value="item.content"/>
             </template>
             <template v-slot:item.tags="{ item }">
-                <v-chip :color="chipColors(item.tags)">{{item.tags}}</v-chip>
+                <v-chip v-for="(tag, i) in item.tags" :key="i" close :color="$store.getters['attributes/tagColor'](tag)">{{tag}}</v-chip>
             </template>
             <template v-slot:item.created="{ item }">
                 <span>{{(new Date(item.created)).toLocaleString()}}</span>
             </template>
             <template v-slot:item.action="{ item }">
-                <v-btn small @click="deleteItem(item.id)"><v-icon>mdi-delete</v-icon></v-btn>
+                <v-btn icon @click="deleteItem(item.id)"><v-icon>mdi-delete</v-icon></v-btn>
             </template>
         </v-data-table>
     </v-app>
@@ -80,17 +80,14 @@ export default {
     methods:{
         deleteItem(id){
             if(id === -1){
-                snackbarMessage = "Reload the page to update the database!"
-                this.snackbarColor = "error"
-                this.showSnackbar = true
+                this.showLayoutSnackbar("Reload the page to update the database!", "error")
             }else{
                 axios.post(`${process.env.baseUrl}api/deleteItem`, {id}).then( (res)=>{
                     this.$store.commit("items/removeItem", id)
-                    showLayoutSnackbar('Deleted', 'Success')
+                    this.showLayoutSnackbar('Deleted', 'Success')
                 }).catch((err) => {
-                    showLayoutSnackbar("Err: " + err, 'error')
+                    this.showLayoutSnackbar("Err: " + err, 'error')
                 })
-
             }
         },
         customSearch(value, search, item){
@@ -125,17 +122,17 @@ export default {
             }
             return false;
         },
-        chipColors(key) {
-            const table ={
-                "Engine": "blue",
-                "GUI": "green",
-                "API": "red"
-            }
-            return table[key] ? table[key] : "grey"
+        editItemContent(item){
+            this.showLayoutSnackbar(item, "")
+            axios.post(`${process.env.baseUrl}api/updateItemContent`, item).then(
+                this.showLayoutSnackbar("Updated: " + item.content, "success")
+            ).catch( (err) => {
+                this.showLayoutSnackbar("Err: " + err, "error")
+            })
         },
         showLayoutSnackbar(msg, color){
-            this.$nuxt.emit({snackbarMessage:msg, snackbarColor: color, showSnackbar: true})
-        }
+            this.$nuxt.$emit("updateLayoutData", {snackbarMessage:msg, snackbarColor: color, showSnackbar: true})
+        },
     }
 }
    

@@ -58,9 +58,7 @@
       </v-btn>
     </v-app-bar>
     <v-content>
-      <v-container fluid style="margin: 10px; padding: 10px; width: 100%">
         <nuxt />
-      </v-container>
     </v-content>
     <v-navigation-drawer
       v-model="rightDrawer"
@@ -109,6 +107,11 @@ export default {
           icon: 'mdi-format-list-bulleted-type',
           title: 'List',
           to: '/itemList'
+        },
+        {
+          icon: 'mdi-cog',
+          title: 'AttribList',
+          to: '/attribList'
         }
       ],
       miniVariant: false,
