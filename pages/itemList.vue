@@ -28,7 +28,8 @@
             :items="$store.state.items.items"
             :options="options"
             :search="search"
-            :custom-filter="customSearch">
+            :custom-filter="customSearch"
+            >
 
             <template v-slot:item.content="{item}">
                 <v-textarea auto-grow @input="editItemContent({content: $event, id: item.id})" :value="item.content"/>
@@ -40,13 +41,23 @@
                 <span>{{(new Date(item.created)).toLocaleString()}}</span>
             </template>
             <template v-slot:item.action="{ item }">
-                <v-btn icon @click="deleteItem(item.id)"><v-icon>mdi-delete</v-icon></v-btn>
+                <v-row>
+                    <v-btn icon @click="click(item.id)"><v-icon>mdi-pencil</v-icon></v-btn>
+                    <v-btn icon @click="deleteItem(item.id)"><v-icon>mdi-delete</v-icon></v-btn>
+                </v-row>
             </template>
         </v-data-table>
+        
+        <v-dialog v-model="showsTagEdit">
+            <SelectableInput/>
+            <chip-edit-card/>
+        </v-dialog>
     </v-app>
 </template>
 
 <script>
+import ChipEditCard from  '~/components/ChipEditCard.vue'
+import SelectableInput from '~/components/SelectableInput.vue'
 import {mapState} from 'vuex'
 import axios from 'axios'
 
@@ -75,9 +86,18 @@ export default {
             },
             search: "",
             filters:[ContentIdx, TypeIdx, DepIdx, NameIdx, TagIdx],
+            showsTagEdit: false,
+            selectedTags: {},
         }
     },
+    components: {
+        ChipEditCard,
+        SelectableInput
+    },
     methods:{
+        click(row){
+            this.showsTagEdit = true
+        },
         deleteItem(id){
             if(id === -1){
                 this.showLayoutSnackbar("Reload the page to update the database!", "error")
@@ -133,6 +153,9 @@ export default {
         showLayoutSnackbar(msg, color){
             this.$nuxt.$emit("updateLayoutData", {snackbarMessage:msg, snackbarColor: color, showSnackbar: true})
         },
+        toggleSelectedTag(tag){
+
+        }
     }
 }
    

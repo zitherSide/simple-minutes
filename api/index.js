@@ -50,7 +50,7 @@ app.get('/api/getItems', (req, res) => {
 
 app.post('/api/addTag', async (req, res) => {
     db.serialize( () => {
-        db.run('INSERT into tags(tag) VALUES(?)', req.body.data, (err) =>{
+        db.run('INSERT into tags(tag, color) VALUES(?, ?)', [req.body.data.tag, req.body.data.color], (err) =>{
             if(err){
                 console.log(err)
             }
@@ -72,7 +72,7 @@ app.post('/api/updateTag', async (req, res) => {
 
 app.post('/api/addType', async (req, res) => {
     db.serialize( () => {
-        db.run('INSERT into types(type) VALUES(?)', req.body.data, (err) =>{
+        db.run('INSERT into types(type) VALUES(?)', req.body.data.type, (err) =>{
             if(err){
                 console.log(err)
             }
@@ -105,7 +105,7 @@ app.post('/api/deleteType', async (req, res) => {
 
 app.post('/api/addName', async (req, res) => {
     db.serialize( () => {
-        db.run('INSERT into names(name) VALUES(?)', req.body.name, (err) =>{
+        db.run('INSERT into names(name) VALUES(?)', req.body.data.name, (err) =>{
             if(err){
                 console.log(err)
             }
@@ -138,7 +138,7 @@ app.post('/api/deleteName', async (req, res) => {
 
 app.post('/api/addDepartment', async (req, res) => {
     db.serialize( () => {
-        db.run('INSERT into departments(department) VALUES(?)', req.body.department, (err) =>{
+        db.run('INSERT into departments(department) VALUES(?)', req.body.data.department, (err) =>{
             if(err){
                 console.log(err)
             }
@@ -160,7 +160,7 @@ app.post('/api/updateDepartment', async (req, res) => {
 
 app.post('/api/deleteDepartment', async (req, res) => {
     db.serialize( () => {
-        db.run('DELETE departments WHERE id = ?', [req.body.id], (err) => {
+        db.run('DELETE FROM departments WHERE id = ?', [req.body.id], (err) => {
             if(err){
                 console.log(err)
             }

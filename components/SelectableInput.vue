@@ -3,7 +3,7 @@
         <v-card outlined >
             <v-card-subtitle>
                 {{label}} 
-                <v-btn icon small depressed @click=OnClick><v-icon color="green">mdi-plus</v-icon></v-btn>
+                <v-btn icon small depressed @click=OnClick><v-icon color="success">mdi-plus</v-icon></v-btn>
             </v-card-subtitle>
             <v-autocomplete class="mx-4" v-model='innerModel' :items="items"/>
         </v-card>
@@ -16,7 +16,6 @@ export default {
         label: String,
         model: String,
         items: Array,
-        btnFunc: Function
     },
     computed:{
         innerModel:{

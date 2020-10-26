@@ -2,6 +2,10 @@ import axios from 'axios'
 
 export default async function({store}){
     let res = await axios.get(`${process.env.baseUrl}api/getTags`)//.then( (req, res, next) => {
+    res.data.forEach( elem => {
+        if(elem.color === null)
+            elem.color = ""
+    })
     store.commit("attributes/setTags", res.data)
 
     res = await axios.get(`${process.env.baseUrl}api/getNames`);

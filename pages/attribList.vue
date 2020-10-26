@@ -125,7 +125,7 @@ export default {
         },
         deleteType(type){
             axios.post(`${process.env.baseUrl}api/deleteType`, type).then(
-                this.showLayoutSnackbar("Deleted" + type.type, "success")
+                this.showLayoutSnackbar("Deleted" + JSON.stringify(type), "success")
             ).catch( (err) => {
                 this.showLayoutSnackbar("Err: " + err, "error")
             })

@@ -10,27 +10,44 @@
             <v-card>
                 Attributes
                 <v-row justify="center">
-                    <SelectableInput v-for="item in items" :key=item.label
-                        :label="item.label"
-                        :model="item.data"
-                        @change="item.data = $event"
-                        @click="startAttribEdit(item.label, item.addMutation, item.hadKeyGetter, item.webAPI)"
-                        :items="item.list"
-                        class="mx-2">
-                    </SelectableInput>
+                    <SelectableInput
+                        label="Type"
+                        :model="selectedType"
+                        @change="selectedType = $event"
+                        @click="showAddTypeDlg=true"
+                        :items="$store.getters['attributes/typeArray']"/>
+                    <SelectableInput
+                        label="Department"
+                        :model="selectedDepartment"
+                        @change="selectedDepartment = $event"
+                        @click="showAddDepartmentDlg=true"
+                        :items="$store.getters['attributes/departmentArray']"/>
                     <v-col sm='4' md='3'>
-                        <v-card outlined sm='6'>
+                        <v-card outlined>
                             <v-card-subtitle>
-                                Tags 
-                                <v-btn icon small depressed><v-icon color="green">mdi-plus</v-icon></v-btn>
+                                Name
+                                <v-btn color='success' icon @click="showAddNameDlg=true"><v-icon>mdi-plus</v-icon></v-btn>
                             </v-card-subtitle>
-                            <v-chip-group column>
-                                <v-chip v-for="(tag, i) in $store.state.attributes.tags" :key="i"
-                                    :outlined="!selectedTag[tag.tag]" :color='tag.color' @click="toggleSelectTag(tag)">
-                                    {{tag.tag}}
-                                </v-chip>
-                            </v-chip-group>
+                            <v-card-text>
+                                <v-select
+                                    dense
+                                    outlined
+                                    multiple
+                                    v-model="selectedNames"
+                                    :items='$store.getters["attributes/nameArray"]'>
+                                </v-select>
+                            </v-card-text>
                         </v-card>
+                    </v-col>
+                    <v-col sm='4' md='3'>
+                        <chip-edit-card
+                            title="Tag"
+                            :items="$store.state.attributes.tags"
+                            :toggleSelectedFunc="toggleSelectTag"
+                            :selectedFlags="selectedTag"
+                            contentStr="tag"
+                            @addClick="showAddTagDlg=true"
+                        />
                     </v-col>
                 </v-row>
             </v-card>
@@ -38,7 +55,7 @@
                 <v-spacer/>
                 <v-btn
                     color="primary"
-                    @click="saveItem(items[0].data, items[1].data, items[2].data, content);">
+                    @click="saveItem(selectedType, selectedDepartment, selectedNames, selectedTag, content);">
                     Create
                 </v-btn>
                 <v-spacer/>
@@ -49,28 +66,6 @@
             </v-card-actions>
         </v-container>
     </v-card>
-    <v-dialog v-model=saved max-width="300">
-        <v-card>
-            <v-card-title class="headline">Item was Saved!</v-card-title>
-            <v-divider/>
-            <v-card-text >
-                <span v-for="item in items" :key=item.label>
-                    {{item.label}}: {{item.data}}, 
-                </span>
-            </v-card-text>
-            <v-divider/>
-            <v-card-text>
-                Content: {{content}}
-            </v-card-text>
-            <v-card-actions>
-                <v-spacer/>
-                <v-btn @click="saved = false" text autofocus>
-                    OK
-                </v-btn> 
-                <v-spacer/>
-            </v-card-actions>
-        </v-card>
-    </v-dialog>
 
     <v-divider/>
     <v-card>
@@ -86,26 +81,41 @@
         </v-data-table>
     </v-card>
 
-    <v-dialog v-model="showAddAttribDlg" max-width='600px'>
-        <v-card>
-            <v-card-title class="headline grey darken-3">New {{edittingAttrib}}</v-card-title>
-            <v-col>
-                <v-text-field 
-                    v-model="newAttribValue" 
-                    autofocus
-                    :rules="[attribRules.notEmpty]"></v-text-field>
-                <v-card-actions>
-                    <v-spacer/>
-                    <v-btn outlined color="success" @click="addAttrib(newAttribValue, edittingAttribMutaion, edittingAttribHasKeyGetter, edittingAttribWebAPI)">Add</v-btn>
-                </v-card-actions>
-            </v-col>
-        </v-card>
+    <v-dialog v-model="showAddTagDlg" max-width='600px'>
+        <add-card
+            title="New Tag"
+            :model="newAttrib"
+            @change="newAttrib = $event"
+            @add="addAttrib('attributes/hasTag', 'api/addTag', 'attributes/addTag', newAttrib, {'tag': newAttrib, 'color': ''})"/>
+    </v-dialog>
+    <v-dialog v-model="showAddTypeDlg" max-width='600px'>
+        <add-card
+            title="New Type"
+            :model="newAttrib"
+            @change="newAttrib = $event"
+            @add="addAttrib('attributes/hasType', 'api/addType', 'attributes/addType', newAttrib, {'type': newAttrib})"/>
+    </v-dialog>
+    <v-dialog v-model="showAddDepartmentDlg" max-width='600px'>
+        <add-card
+            title="New Department"
+            :model="newAttrib"
+            @change="newAttrib = $event"
+            @add="addAttrib('attributes/hasDepartment', 'api/addDepartment', 'attributes/addDepartment', newAttrib, {'department': newAttrib})"/>
+    </v-dialog>
+    <v-dialog v-model="showAddNameDlg" max-width='600px'>
+        <add-card
+            title="New Name"
+            :model="newAttrib"
+            @change="newAttrib = $event"
+            @add="addAttrib('attributes/hasName', 'api/addName', 'attributes/addName', newAttrib, {'name': newAttrib})"/>
     </v-dialog>
 </v-app>
 </template>
 
 <script>
 import SelectableInput from '~/components/SelectableInput.vue'
+import ChipEditCard from '~/components/ChipEditCard.vue'
+import AddCard from '~/components/AddCard.vue'
 import axios from 'axios'
 import {mapState} from 'vuex'
 
@@ -113,32 +123,6 @@ export default {
     data(){
         return {
             saved:false,
-            items:[
-                {
-                    label:"Type",
-                    addMutation: "attributes/addType",
-                    hadKeyGetter: "attributes/hasType",
-                    webAPI: "api/addType",
-                    data: "",   //履歴はlocalstorageに保存したい
-                    list:this.$store.getters["attributes/typeArray"],
-                },
-                {
-                    label:"Department",
-                    addMutation: "attributes/addDepartment",
-                    hadKeyGetter: "attributes/hasDepartment",
-                    webAPI: "api/addDepartment",
-                    data: "",
-                    list:this.$store.getters["attributes/departmentArray"],
-                },
-                {
-                    label:"Name",
-                    addMutation: "attributes/addName",
-                    hadKeyGetter: "attributes/hasName",
-                    webAPI: "api/addName",
-                    data: "",
-                    list:this.$store.getters["attributes/nameArray"],
-                },
-            ],
             content:"",
             recentItemsHeaders:[
                 { text: 'Content', value: "content"},
@@ -156,14 +140,15 @@ export default {
             attribRules: {
                 notEmpty: value => !!value || 'Must have one letter at least.'
             },
-            edittingAttrib: "",
-            edittingAttribMutaion: "",
-            edittingAttribWebAPI: "",
-            edittingAttribHasKeyGetter: "",
-            showAddAttribDlg: false,
-            newAttribValue: "",
-            enabled: false,
+            selectedType: "",
+            selectedDepartment: "",
             selectedTag: {},
+            selectedNames:[],
+            showAddTagDlg: false,
+            showAddTypeDlg: false,
+            showAddNameDlg: false,
+            showAddDepartmentDlg: false,
+            newAttrib: ""
         }
     },
     created() {
@@ -172,52 +157,47 @@ export default {
         });
     },
     components : {
-        SelectableInput
+        SelectableInput,
+        ChipEditCard,
+        AddCard
     },
     methods : {
-        saveItem(type, department, name, content){
-            let tags = Object.keys(this.selectedTag).filter(elem => this.selectedTag[elem])
-            alert(tags)
+        saveItem(type, department, selectedNameFlagsArray, selectedTagFlagObject, content){
+            const tags = Object.keys(selectedTagFlagObject).filter(elem => selectedTagFlagObject[elem])
+            const names = this.$store.getters["attributes/nameArray"].filter( (elem, i) => selectedNameFlagsArray[i])
             let item = {
                 "id": -1,
                 "type": type,
                 "department": department,
-                "names": name,
+                "names": names,
                 "tags": tags,
                 "content": content,
                 "created": Date.now(),
                 "updated": Date.now()
             }
-            this.$store.commit("items/addItem", item);
+            this.$store.commit("items/addItem", item)
             axios.post(`${process.env.baseUrl}api/addItem`, item)
-            this.saved = true;
-            return;
+            this.showLayoutSnackbar(`Added ${this.content}`, 'success')
+            return
         },
         clearInput(){
             this.content = "";
-        },
-        startAttribEdit(attrib, mutation, getter, webAPI){
-            this.edittingAttrib = attrib
-            this.edittingAttribMutaion = mutation
-            this.edittingAttribWebAPI = webAPI
-            this.edittingAttribHasKeyGetter = getter
-            this.showAddAttribDlg = true
-        },
-        addAttrib(newVal, mutation, getter, webAPI){
-            if(!!newVal && this.$store.getters[getter](newVal)){
-                this.showLayoutSnackbar('Already Exists!', 'error')
-            }else{
-                this.$store.commit(mutation, newVal)
-                axios.post(`${process.env.baseUrl}${webAPI}`, {data: newVal})
-                this.showAddAttribDlg = false;
-                this.showLayoutSnackbar('Added!', 'success')
-            }
         },
         showLayoutSnackbar(msg, color){
             this.$nuxt.$emit("updateLayoutData", {snackbarMessage: msg, snackbarColor: color, showSnackbar: true})
         },
         toggleSelectTag(tag){
             this.$set(this.selectedTag, tag.tag, !this.selectedTag[tag.tag])
+        },
+        addAttrib(hasAttribGetter, addAttribServerAPI, addAttribMutation, newVal, newObj){
+            if(this.$store.getters[hasAttribGetter](newVal)){
+                this.showLayoutSnackbar('Already Exists!', 'error')
+            }else{
+                axios.post(`${process.env.baseUrl}${addAttribServerAPI}`, {data: newObj})
+                this.showAddAttribDlg = false;
+                this.showLayoutSnackbar('Added ' + newVal, 'success')
+                this.$store.commit(addAttribMutation, newObj)
+            }
         },
     },
 }

@@ -6,17 +6,17 @@ export const state = ()=>({
 })
 
 export const getters = {
-    hasTag: (state) => (tag) => {
-        return state.tags.includes(tag)
+    hasTag: (state, getters) => (tag) => {
+        return getters.tagArray.includes(tag)
     },
-    hasType: (state) => (type) => {
-        return state.types.includes(type)
+    hasType: (state, getters) => (type) => {
+        return getters.typeArray.includes(type)
     },
-    hasName: (state) => (name) => {
-        return state.names.includes(name)
+    hasName: (state, getters) => (name) => {
+        return getters.nameArray.includes(name)
     },
-    hasDepartment: (state) => (dep) => {
-        return state.departments.includes(dep)
+    hasDepartment: (state, getters) => (dep) => {
+        return getters.departmentArray.includes(dep)
     },
     tagArray: state => state.tags.map( elem => elem.tag ),
     typeArray: state => state.types.map( elem => elem.type ),
@@ -83,7 +83,7 @@ export const mutations = {
         state.types.push(payload)
     },
     deleteType(state, payload){
-        state.types = state.types.filter( elem => elem !== payload)
+        state.types = state.types.filter( elem => elem.id !== payload.id)
     },
     updateType(state, payload){
         const index = state.types.findIndex(elem => elem.id === payload.id)
