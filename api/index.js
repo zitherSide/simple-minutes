@@ -10,6 +10,11 @@ app.use(express.urlencoded({extended: true}))
 
 app.get('/api/getNames', (req, res) => {
     db.serialize( () =>{
+        db.run(`create table if not exists "names" (
+            "id" integer unique not null,
+            "name" text unique not null,
+            primary key("id")
+            )`)
         db.all("SELECT id, name from names", (err, rows)=>{
             res.send(rows)
         })
@@ -18,6 +23,12 @@ app.get('/api/getNames', (req, res) => {
 
 app.get('/api/getTags', (req, res) => {
     db.serialize( () => {
+        db.run(`create table if not exists "tags" (
+            "id" integer unique not null,
+            "tag" text unique not null,
+            "color" text,
+            primary key("id")
+            )`)
         db.all("SELECT id, tag, color from tags", (err, rows) => {
             res.send(rows)
         })
@@ -26,6 +37,11 @@ app.get('/api/getTags', (req, res) => {
 
 app.get('/api/getDepartments', (req, res) => {
     db.serialize( ()=>{
+        db.run(`create table if not exists "departments" (
+            "id" integer unique not null,
+            "department" text unique not null,
+            primary key("id")
+            )`)
         db.all("SELECT id, department from departments", (err, rows) => {
             res.send(rows)
         })
@@ -34,6 +50,12 @@ app.get('/api/getDepartments', (req, res) => {
 
 app.get('/api/getTypes', (req,res) => {
     db.serialize( () => {
+        db.run(`create table if not exists "types" (
+            "id" integer unique not null,
+            "type" text,
+            primary key("id")
+            )`)
+
         db.all('SELECT id, type from types', (err, rows) => {
             res.send(rows)
         })
@@ -42,6 +64,15 @@ app.get('/api/getTypes', (req,res) => {
 
 app.get('/api/getItems', (req, res) => {
     db.serialize( () => {
+        db.run(`create table if not exists "items" (
+            "id" integer unique not null,
+            "content" text,
+            "created" integer,
+            "updated" integer,
+            "tags" text,
+            "type" text,
+            primary key("id")
+            )`)
         db.all("SELECT * from items", (err, rows) => {
             res.send(rows)
         })
