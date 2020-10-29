@@ -194,7 +194,6 @@ export default {
                 this.showLayoutSnackbar('Already Exists!', 'error')
             }else{
                 axios.post(`${process.env.baseUrl}${addAttribServerAPI}`, {data: newObj})
-                this.showAddAttribDlg = false;
                 this.showLayoutSnackbar('Added ' + newVal, 'success')
                 this.$store.commit(addAttribMutation, newObj)
             }

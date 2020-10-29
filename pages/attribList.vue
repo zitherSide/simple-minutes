@@ -8,6 +8,7 @@
                 :deleteFunc="deleteType"
                 contentStr="type"
                 title="Type"
+                @addClick="showAddTypeDlg=true"
             />
         </v-col>
         <v-col md='3' sm='6' xs='6'>
@@ -17,6 +18,7 @@
                 :deleteFunc="deleteDepartment"
                 contentStr="department"
                 title="Department"
+                @addClick="showAddDepartmentDlg=true"
             />
         </v-col>
         <v-col md='3' sm='6' xs='6'>
@@ -26,11 +28,15 @@
                 :deleteFunc="deleteName"
                 contentStr="name"
                 title="Name"
+                @addClick="showAddNameDlg=true"
             />
         </v-col>
         <v-col md='3' sm='6' xs='6'>
             <v-card>
-                <v-card-title class='headline grey black--text text--lighten-1'>Tag</v-card-title>
+                <v-card-title class='headline grey darken-4 grey--text text--lighten-4'>
+                    Tag
+                    <v-btn icon color="success" @click="showAddTagDlg = true"><v-icon>mdi-plus</v-icon></v-btn>
+                </v-card-title>
                 <v-chip-group column>
                     <v-chip 
                         close
@@ -71,12 +77,43 @@
             </v-card-actions>
         </v-card>
     </v-dialog>
+
+    <v-dialog v-model="showAddTagDlg" max-width='600px'>
+        <add-card
+            title="New Tag"
+            :model="newAttrib"
+            @change="newAttrib = $event"
+            @add="addAttrib('attributes/hasTag', 'api/addTag', 'attributes/addTag', newAttrib, {'tag': newAttrib, 'color': ''})"/>
+    </v-dialog>
+    <v-dialog v-model="showAddTypeDlg" max-width='600px'>
+        <add-card
+            title="New Type"
+            :model="newAttrib"
+            @change="newAttrib = $event"
+            @add="addAttrib('attributes/hasType', 'api/addType', 'attributes/addType', newAttrib, {'type': newAttrib})"/>
+    </v-dialog>
+    <v-dialog v-model="showAddDepartmentDlg" max-width='600px'>
+        <add-card
+            title="New Department"
+            :model="newAttrib"
+            @change="newAttrib = $event"
+            @add="addAttrib('attributes/hasDepartment', 'api/addDepartment', 'attributes/addDepartment', newAttrib, {'department': newAttrib})"/>
+    </v-dialog>
+    <v-dialog v-model="showAddNameDlg" max-width='600px'>
+        <add-card
+            title="New Name"
+            :model="newAttrib"
+            @change="newAttrib = $event"
+            @add="addAttrib('attributes/hasName', 'api/addName', 'attributes/addName', newAttrib, {'name': newAttrib})"/>
+    </v-dialog>
+    
 </v-app>
 </template>
 
 <script>
 import axios from 'axios'
 import ListEditor from '~/components/ListEditor.vue'
+import AddCard from '~/components/AddCard.vue'
 
 export default {
     data() {
@@ -85,12 +122,21 @@ export default {
             edittingID: 0,
             edittingAttrib: "",
             edittingColor: "",
+            showAddTypeDlg: false,
+            showAddDepartmentDlg: false,
+            showAddNameDlg: false,
+            showAddTagDlg: false,
+            newAttrib: ""
         }
     },
     components: {
-        ListEditor
+        ListEditor,
+        AddCard
     },
     methods: {
+        test(){
+            alert("test")
+        },
         editTag(tag){
             this.edittingID = tag.id
             this.edittingAttrib = tag.tag
@@ -167,7 +213,16 @@ export default {
         },
         showLayoutSnackbar(msg, color){
             this.$nuxt.$emit('updateLayoutData', {showSnackbar:true, snackbarMessage: msg, snackbarColor: color})
-        }
+        },
+        addAttrib(hasAttribGetter, addAttribServerAPI, addAttribMutation, newVal, newObj){
+            if(this.$store.getters[hasAttribGetter](newVal)){
+                this.showLayoutSnackbar('Already Exists!', 'error')
+            }else{
+                axios.post(`${process.env.baseUrl}${addAttribServerAPI}`, {data: newObj})
+                this.$store.commit(addAttribMutation, newObj)
+                this.showLayoutSnackbar('Added ' + newVal, 'success')
+            }
+        },
     }
 }
 </script>

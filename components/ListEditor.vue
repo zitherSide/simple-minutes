@@ -1,6 +1,9 @@
 <template>
     <v-card flat>
-        <v-card-title class='headline grey black--text text--lighten-1'>{{title}}</v-card-title>
+        <v-card-title class='headline grey darken-4 grey--text text--lighten-4'>
+            {{title}}
+            <v-btn icon color="success" @click='$emit("addClick")'><v-icon>mdi-plus</v-icon></v-btn>
+        </v-card-title>
         <v-card-text>
             <v-list class='transparent'>
                 <v-list-item v-for="(item, i) in items" :key="i">
