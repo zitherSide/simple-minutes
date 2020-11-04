@@ -47,6 +47,7 @@
                             :selectedFlags="selectedTag"
                             contentStr="tag"
                             @addClick="showAddTagDlg=true"
+                            hasButton
                         />
                     </v-col>
                 </v-row>

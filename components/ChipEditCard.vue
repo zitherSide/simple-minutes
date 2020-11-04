@@ -2,7 +2,7 @@
     <v-card outlined sm='6'>
         <v-card-subtitle>
             {{title}} 
-            <v-btn icon small depressed @click="OnClick"><v-icon color="success">mdi-plus</v-icon></v-btn>
+            <v-btn v-if="hasButton" icon small depressed @click="OnClick"><v-icon color="success">mdi-plus</v-icon></v-btn>
         </v-card-subtitle>
         <v-chip-group column>
             <v-chip v-for="(item, i) in items" :key="i"
@@ -23,6 +23,7 @@ export default {
         toggleSelectedFunc: Function,
         click: Function,
         addFunc: Function,
+        hasButton: Boolean
     },
     methods: {
         OnClick(){

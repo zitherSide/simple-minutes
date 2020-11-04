@@ -18,8 +18,14 @@
                         <v-btn>Type</v-btn>   
                         <v-btn>Dep.</v-btn>   
                         <v-btn>Name</v-btn>   
-                        <v-btn>Tag</v-btn>   
                     </v-btn-toggle> 
+                    <chip-edit-card
+                        title="Tag"
+                        contentStr="tag"
+                        :items='$store.state.attributes.tags'
+                        :selectedFlags="selectedTags"
+                        :toggleSelectedFunc="toggleSelectTag"
+                    />
                 </v-row>
             </v-col>
         </v-card>
@@ -47,11 +53,6 @@
                 </v-row>
             </template>
         </v-data-table>
-        
-        <v-dialog v-model="showsTagEdit">
-            <SelectableInput/>
-            <chip-edit-card/>
-        </v-dialog>
     </v-app>
 </template>
 
@@ -86,13 +87,17 @@ export default {
             },
             search: "",
             filters:[ContentIdx, TypeIdx, DepIdx, NameIdx, TagIdx],
-            showsTagEdit: false,
             selectedTags: {},
         }
     },
     components: {
         ChipEditCard,
         SelectableInput
+    },
+    created(){
+        this.$store.getters["attributes/tagArray"].forEach(element => {
+            this.$set(this.selectedTags, element, true)
+        });
     },
     methods:{
         click(row){
@@ -153,9 +158,9 @@ export default {
         showLayoutSnackbar(msg, color){
             this.$nuxt.$emit("updateLayoutData", {snackbarMessage:msg, snackbarColor: color, showSnackbar: true})
         },
-        toggleSelectedTag(tag){
-
-        }
+        toggleSelectTag(tag){
+            this.$set(this.selectedTags, tag.tag, !this.selectedTags[tag.tag])
+        },
     }
 }
    
