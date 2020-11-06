@@ -1,7 +1,7 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
-  mode: 'universal',
+  ssr: 'true',  //server side rendering
   /*
   ** Headers of the page
   */
@@ -90,7 +90,7 @@ export default {
     host: '0.0.0.0'
   },
   env: {
-    baseUrl: 'http://172.29.50.10:8000/'
+    baseUrl: 'http://172.29.51.106:8000/'
   },
   router: {
     middleware: 'dataLoader'
