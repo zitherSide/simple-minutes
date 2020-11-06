@@ -57,9 +57,9 @@
         <v-icon>mdi-menu</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-content>
+    <v-main>
         <nuxt />
-    </v-content>
+    </v-main>
     <v-navigation-drawer
       v-model="rightDrawer"
       :right="right"
