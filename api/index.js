@@ -71,6 +71,8 @@ app.get('/api/getItems', (req, res) => {
             "updated" integer,
             "tags" text,
             "type" text,
+            "department" text,
+            "names" text,
             primary key("id")
             )`)
         db.all("SELECT * from items", (err, rows) => {
