@@ -31,7 +31,7 @@
         </v-card>
         <v-data-table
             :headers="headers"
-            :items="$store.state.items.items"
+            :items="filteredItems"
             :options="options"
             :search="search"
             :custom-filter="customSearch"
@@ -66,7 +66,6 @@ const ContentIdx = 0
 const TypeIdx = 1
 const DepIdx = 2
 const NameIdx = 3
-const TagIdx = 4
 
 export default {
     data () {
@@ -86,8 +85,31 @@ export default {
                 itemsPerPage: 1000
             },
             search: "",
-            filters:[ContentIdx, TypeIdx, DepIdx, NameIdx, TagIdx],
+            filters:[ContentIdx, TypeIdx, DepIdx, NameIdx],
             selectedTags: {},
+        }
+    },
+    computed: {
+        filteredItems() {
+            let tagSearch = ""
+            Object.keys(this.selectedTags).forEach( (key) => {
+                if(this.selectedTags[key])
+                    tagSearch += key + "|"
+            })
+            tagSearch = tagSearch.slice(0, -1) //最後の|を消す
+
+            let res = this.$store.state.items.items.filter( (elem) => {
+                let found = false;
+                elem.tags.forEach( (tag) => {
+                    if(tag.match(new RegExp(tagSearch, 'i'))){
+                        found = true;
+                        return
+                    }
+                })
+                return found;
+            })
+
+            return res;
         }
     },
     components: {
@@ -101,7 +123,7 @@ export default {
     },
     methods:{
         click(row){
-            this.showsTagEdit = true
+            this.showsTagEdit = false
         },
         deleteItem(id){
             if(id === -1){
@@ -121,30 +143,35 @@ export default {
             }
 
             if(this.filters.some(elem => elem === ContentIdx)){
-                if(searchInAttrib(search, item, "content")){
-                    return true;
+                 if(item.content != null && search != null && item.content.match(new RegExp(search, 'i')) ){
+                    return true
                 }
             }
             if(this.filters.some(elem => elem === TypeIdx)){
-                if(searchInAttrib(search, item, "type")){
-                    return true;
+                 if(item.type != null && search != null && item.type.match(new RegExp(search, 'i')) ){
+                    return true
                 }
             }
             if(this.filters.some(elem => elem === DepIdx)){
-                if(searchInAttrib(search, item, "department")){
-                    return true;
+                 if(item.department != null && search != null && item.department.match(new RegExp(search, 'i')) ){
+                    return true
                 }
             }
             if(this.filters.some(elem => elem === NameIdx)){
-                if(searchInAttrib(search, item, "name")){
-                    return true;
+                if(item.names != null && search != null){
+                    let found = false
+                    item.names.forEach((elem) =>{
+                        if(elem.match(new RegExp(search, 'i'))){
+                            found = true
+                            return
+                        }
+                    })
+                    if(found){
+                        return true
+                    }
                 }
             }
-            if(this.filters.some(elem => elem === TagIdx)){
-                if(searchInAttrib(search, item, "tags")){
-                    return true;
-                }
-            }
+
             return false;
         },
         editItemContent(item){
