@@ -40,15 +40,17 @@
                         </v-card>
                     </v-col>
                     <v-col sm='4' md='3'>
-                        <chip-edit-card
-                            title="Tag"
-                            :items="$store.state.attributes.tags"
-                            :toggleSelectedFunc="toggleSelectTag"
-                            :selectedFlags="selectedTag"
-                            contentStr="tag"
-                            @addClick="showAddTagDlg=true"
-                            hasButton
-                        />
+                        <v-card outlined>
+                            <v-card-subtitle>
+                                Tag
+                                <v-btn color='success' icon @click="showAddTagDlg=true"><v-icon>mdi-plus</v-icon></v-btn>
+                            </v-card-subtitle>
+                            <chip-list
+                                :items='$store.state.attributes.tags'
+                                :selecteds='selectedTags'
+                                contentStr='tag'
+                                @change='selectedTags = $event'/>
+                        </v-card>
                     </v-col>
                 </v-row>
             </v-card>
@@ -115,10 +117,10 @@
 
 <script>
 import SelectableInput from '~/components/SelectableInput.vue'
-import ChipEditCard from '~/components/ChipEditCard.vue'
 import AddCard from '~/components/AddCard.vue'
 import axios from 'axios'
 import {mapState} from 'vuex'
+import ChipList from '~/components/ChipList.vue'
 
 export default {
     data(){
@@ -143,28 +145,23 @@ export default {
             },
             selectedType: "",
             selectedDepartment: "",
-            selectedTag: {},
             selectedNames:[],
             showAddTagDlg: false,
             showAddTypeDlg: false,
             showAddNameDlg: false,
             showAddDepartmentDlg: false,
-            newAttrib: ""
+            newAttrib: "",
+            selectedTags: []
         }
-    },
-    created() {
-        this.$store.getters["attributes/tagArray"].forEach( (element, i) => {
-            this.$set(this.selectedTag, element, false)
-        });
     },
     components : {
         SelectableInput,
-        ChipEditCard,
-        AddCard
+        AddCard,
+        ChipList
     },
-    methods : {
-        saveItem(type, department, selectedNameFlagsArray, selectedTagFlagObject, content){
-            const tags = Object.keys(selectedTagFlagObject).filter(elem => selectedTagFlagObject[elem])
+    methods: {
+        saveItem(type, department, selectedNameFlagsArray, selectedTags, content){
+            const tags = selectedTags.map(elem => elem.tag)
             const names = this.$store.getters["attributes/nameArray"].filter( (elem, i) => selectedNameFlagsArray[i])
             let item = {
                 "id": -1,
@@ -186,9 +183,6 @@ export default {
         },
         showLayoutSnackbar(msg, color){
             this.$nuxt.$emit("updateLayoutData", {snackbarMessage: msg, snackbarColor: color, showSnackbar: true})
-        },
-        toggleSelectTag(tag){
-            this.$set(this.selectedTag, tag.tag, !this.selectedTag[tag.tag])
         },
         addAttrib(hasAttribGetter, addAttribServerAPI, addAttribMutation, newVal, newObj){
             if(this.$store.getters[hasAttribGetter](newVal)){

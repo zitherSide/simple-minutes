@@ -7,25 +7,30 @@
                     <v-spacer/>
                 </v-layout>
                 <v-text-field append-outer-icon="mdi-magnify" outlined v-model="search"></v-text-field>
-                <v-row>
+                <v-row class='mx-4' align="center">
                     <v-spacer/>
-                    <v-btn-toggle
-                        v-model="filters"
-                        dense
-                        multiple>
-                        <v-spacer/>
-                        <v-btn>Content</v-btn>   
-                        <v-btn>Type</v-btn>   
-                        <v-btn>Dep.</v-btn>   
-                        <v-btn>Name</v-btn>   
-                    </v-btn-toggle> 
-                    <chip-edit-card
-                        title="Tag"
-                        contentStr="tag"
-                        :items='$store.state.attributes.tags'
-                        :selectedFlags="selectedTags"
-                        :toggleSelectedFunc="toggleSelectTag"
-                    />
+                    <v-card class='mx-2'>
+                        <v-card-subtitle>Search Targets</v-card-subtitle>
+                        <v-btn-toggle
+                            v-model="filters"
+                            dense
+                            multiple>
+                            <v-spacer/>
+                            <v-btn>Content</v-btn>   
+                            <v-btn>Type</v-btn>   
+                            <v-btn>Dep.</v-btn>   
+                            <v-btn>Name</v-btn>   
+                        </v-btn-toggle> 
+                    </v-card>
+                    <v-card>
+                        <v-card-subtitle>Tag Filter</v-card-subtitle>
+                        <chip-list
+                            contentStr="tag"
+                            :items='$store.state.attributes.tags'
+                            :selecteds="selectedTags"
+                            @change="selectedTags=$event"
+                        />
+                    </v-card>
                 </v-row>
             </v-col>
         </v-card>
@@ -57,7 +62,7 @@
 </template>
 
 <script>
-import ChipEditCard from  '~/components/ChipEditCard.vue'
+import ChipList from '~/components/ChipList.vue'
 import SelectableInput from '~/components/SelectableInput.vue'
 import {mapState} from 'vuex'
 import axios from 'axios'
@@ -86,15 +91,14 @@ export default {
             },
             search: "",
             filters:[ContentIdx, TypeIdx, DepIdx, NameIdx],
-            selectedTags: {},
+            selectedTags: [],
         }
     },
     computed: {
         filteredItems() {
             let tagSearch = ""
-            Object.keys(this.selectedTags).forEach( (key) => {
-                if(this.selectedTags[key])
-                    tagSearch += key + "|"
+            this.selectedTags.forEach( (elem) => {
+                tagSearch += elem.tag + "|"
             })
             tagSearch = tagSearch.slice(0, -1) //最後の|を消す
 
@@ -113,7 +117,7 @@ export default {
         }
     },
     components: {
-        ChipEditCard,
+        ChipList,
         SelectableInput
     },
     created(){
