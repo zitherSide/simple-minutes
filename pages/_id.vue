@@ -72,8 +72,8 @@ export default {
     created() {
         this.type = this.item.type
         this.department = this.item.department
-        this.names = this.item.names
-        this.tags = this.item.tags ? [] : this.$store.state.attributes.tags.filter(elem => this.item.tags.includes(elem.tag))
+        this.names = this.item.names ? this.item.names : []
+        this.tags = this.item.tags ? this.$store.state.attributes.tags.filter(elem => this.item.tags.includes(elem.tag)) : []
         this.content = this.item.content
     },
     data() {
