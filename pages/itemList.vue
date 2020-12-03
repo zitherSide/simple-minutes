@@ -53,7 +53,7 @@
             </template>
             <template v-slot:item.action="{ item }">
                 <v-row>
-                    <v-btn icon @click="click(item.id)"><v-icon>mdi-pencil</v-icon></v-btn>
+                    <v-btn icon @click="jump(item.id)"><v-icon>mdi-pencil</v-icon></v-btn>
                     <v-btn icon @click="deleteItem(item.id)"><v-icon>mdi-delete</v-icon></v-btn>
                 </v-row>
             </template>
@@ -96,6 +96,9 @@ export default {
     },
     computed: {
         filteredItems() {
+            if(this.selectedTags.length === 0){
+                return this.$store.state.items.items
+            }
             let tagSearch = ""
             this.selectedTags.forEach( (elem) => {
                 tagSearch += elem.tag + "|"
@@ -126,8 +129,8 @@ export default {
         });
     },
     methods:{
-        click(row){
-            this.showsTagEdit = false
+        jump(id){
+            this.$router.push(`${id}`)
         },
         deleteItem(id){
             if(id === -1){

@@ -253,4 +253,16 @@ app.post('/api/deleteTag', async (req, res) => {
     await res.end()
 })
 
+app.post('/api/updateItem', async (req, res) => {
+    db.serialize( () => {
+        db.run('UPDATE items SET type = ?, department = ?, names = ?, tags = ?, content = ? WHERE id = ?', 
+            [req.body.type, req.body.department, JSON.stringify(req.body.names), JSON.stringify(req.body.tags), req.body.content, req.body.id], (err) =>{
+            if(err){
+                console.log(err)
+            }
+        })
+    })
+    await res.end()
+})
+
 export default app

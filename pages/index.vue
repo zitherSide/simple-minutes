@@ -12,53 +12,51 @@
                 <v-row justify="center">
                     <SelectableInput
                         label="Type"
+                        styleClass="ma-3"
                         :model="selectedType"
                         @change="selectedType = $event"
                         @click="showAddTypeDlg=true"
                         :items="$store.getters['attributes/typeArray']"/>
                     <SelectableInput
                         label="Department"
+                        styleClass="ma-3"
                         :model="selectedDepartment"
                         @change="selectedDepartment = $event"
                         @click="showAddDepartmentDlg=true"
                         :items="$store.getters['attributes/departmentArray']"/>
-                    <v-col sm='4' md='3'>
-                        <v-card outlined>
-                            <v-card-subtitle>
-                                Name
-                                <v-btn color='success' icon @click="showAddNameDlg=true"><v-icon>mdi-plus</v-icon></v-btn>
-                            </v-card-subtitle>
-                            <v-card-text>
-                                <v-select
-                                    dense
-                                    outlined
-                                    multiple
-                                    v-model="selectedNames"
-                                    :items='$store.getters["attributes/nameArray"]'>
-                                </v-select>
-                            </v-card-text>
-                        </v-card>
-                    </v-col>
-                    <v-col sm='4' md='3'>
-                        <v-card outlined>
-                            <v-card-subtitle>
-                                Tag
-                                <v-btn color='success' icon @click="showAddTagDlg=true"><v-icon>mdi-plus</v-icon></v-btn>
-                            </v-card-subtitle>
-                            <chip-list
-                                :items='$store.state.attributes.tags'
-                                :selecteds='selectedTags'
-                                contentStr='tag'
-                                @change='selectedTags = $event'/>
-                        </v-card>
-                    </v-col>
+                    <v-card outlined class="ma-3">
+                        <v-card-subtitle>
+                            Name
+                            <v-btn color='success' icon @click="showAddNameDlg=true"><v-icon>mdi-plus</v-icon></v-btn>
+                        </v-card-subtitle>
+                        <v-card-text>
+                            <v-select
+                                dense
+                                outlined
+                                multiple
+                                v-model="selectedNames"
+                                :items='$store.getters["attributes/nameArray"]'>
+                            </v-select>
+                        </v-card-text>
+                    </v-card>
+                    <v-card outlined class="ma-3">
+                        <v-card-subtitle>
+                            Tag
+                            <v-btn color='success' icon @click="showAddTagDlg=true"><v-icon>mdi-plus</v-icon></v-btn>
+                        </v-card-subtitle>
+                        <chip-list
+                            :items='$store.state.attributes.tags'
+                            :selecteds='selectedTags'
+                            contentStr='tag'
+                            @change='selectedTags = $event'/>
+                    </v-card>
                 </v-row>
             </v-card>
             <v-card-actions>
                 <v-spacer/>
                 <v-btn
                     color="primary"
-                    @click="saveItem(selectedType, selectedDepartment, selectedNames, selectedTag, content);">
+                    @click="saveItem(selectedType, selectedDepartment, selectedNames, selectedTags, content);">
                     Create
                 </v-btn>
                 <v-spacer/>
@@ -146,12 +144,12 @@ export default {
             selectedType: "",
             selectedDepartment: "",
             selectedNames:[],
+            selectedTags: [],
             showAddTagDlg: false,
             showAddTypeDlg: false,
             showAddNameDlg: false,
             showAddDepartmentDlg: false,
-            newAttrib: "",
-            selectedTags: []
+            newAttrib: ""
         }
     },
     components : {
@@ -160,15 +158,13 @@ export default {
         ChipList
     },
     methods: {
-        saveItem(type, department, selectedNameFlagsArray, selectedTags, content){
-            const tags = selectedTags.map(elem => elem.tag)
-            const names = this.$store.getters["attributes/nameArray"].filter( (elem, i) => selectedNameFlagsArray[i])
+        saveItem(type, department, selectedNames, selectedTags, content){
             let item = {
                 "id": -1,
                 "type": type,
                 "department": department,
-                "names": names,
-                "tags": tags,
+                "names": selectedNames ? selectedNames : [],
+                "tags": selectedTags ? selectedTags : [],
                 "content": content,
                 "created": Date.now(),
                 "updated": Date.now()
