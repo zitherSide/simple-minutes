@@ -1,6 +1,5 @@
 const express = require('express')
 const app = express()
-const fs = require('fs')
 const sqlite = require('sqlite3')
 const db = new sqlite.Database('assets/db')
 
