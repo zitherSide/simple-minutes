@@ -164,7 +164,7 @@ export default {
                 "type": type,
                 "department": department,
                 "names": selectedNames ? selectedNames : [],
-                "tags": selectedTags ? selectedTags : [],
+                "tags": selectedTags ? selectedTags.map( t => t.tag) : [],
                 "content": content,
                 "created": Date.now(),
                 "updated": Date.now()
